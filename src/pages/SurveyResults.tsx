@@ -110,10 +110,12 @@ export default function SurveyResults() {
         counts[key] = (counts[key] || 0) + 1;
       });
 
+      console.log(`Radio/YesNo counts for question ${questionId}:`, counts);
+
       return Object.entries(counts).map(([key, value]) => {
         let name = key;
         if (question.type === 'yesno') {
-          name = key === 'yes' ? 'Oui' : 'Non';
+          name = key === 'yes' ? 'Oui' : key === 'no' ? 'Non' : key;
         } else {
           const option = question.options?.find(opt => opt.id === key);
           name = option?.label || key;
