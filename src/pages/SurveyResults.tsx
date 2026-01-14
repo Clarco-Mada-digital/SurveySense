@@ -89,12 +89,24 @@ export default function SurveyResults() {
     const question = survey?.questions.find(q => q.id === questionId);
     if (!question) return null;
 
-    const answers = responses.map(r => r.answers.find(a => a.questionId === questionId)?.value).filter(Boolean);
+    // Get all answers for this question, ensuring we have valid values
+    const rawAnswers = responses.map(r => r.answers.find(a => a.questionId === questionId)?.value);
+    const answers = rawAnswers.filter((answer): answer is string | number | string[] => 
+      answer !== undefined && answer !== null && answer !== ''
+    );
+
+    // Debug: log pour voir les types de réponses
+    console.log(`Question ${questionId} (${question?.type}):`, {
+      question,
+      rawAnswers,
+      answers,
+      answerTypes: rawAnswers.map(a => typeof a)
+    });
 
     if (question.type === 'radio' || question.type === 'yesno') {
       const counts: Record<string, number> = {};
       answers.forEach(answer => {
-        const key = answer as string;
+        const key = String(answer);
         counts[key] = (counts[key] || 0) + 1;
       });
 
@@ -113,7 +125,13 @@ export default function SurveyResults() {
     if (question.type === 'checkbox') {
       const counts: Record<string, number> = {};
       answers.forEach(answer => {
-        const arr = answer as string[];
+        // Ensure answer is an array for checkbox questions
+        const arr = Array.isArray(answer) ? answer : 
+          // If it's a string, split by '; ' to handle legacy format
+          typeof answer === 'string' ? answer.split('; ').map(s => s.trim()).filter(Boolean) : [];
+        
+        console.log(`Checkbox answer processing:`, { original: answer, processed: arr });
+        
         arr.forEach(optionId => {
           counts[optionId] = (counts[optionId] || 0) + 1;
         });
@@ -128,8 +146,10 @@ export default function SurveyResults() {
     if (question.type === 'scale') {
       const counts: Record<number, number> = {};
       answers.forEach(answer => {
-        const num = answer as number;
-        counts[num] = (counts[num] || 0) + 1;
+        const num = Number(answer);
+        if (!isNaN(num)) {
+          counts[num] = (counts[num] || 0) + 1;
+        }
       });
 
       return Object.entries(counts)

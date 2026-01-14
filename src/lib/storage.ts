@@ -56,18 +56,32 @@ export const getResponsesBySurveyId = (surveyId: string): SurveyResponse[] => {
 const formatAnswerForExport = (answer: any, question: any): string => {
   if (!answer) return '';
   
+  // Debug: log pour vérifier les données
+  console.log('formatAnswerForExport - question:', question);
+  console.log('formatAnswerForExport - answer:', answer);
+  
   if (Array.isArray(answer)) {
     // For checkbox questions - convert option IDs to labels
     const labels = answer.map(optionId => {
       const option = question.options?.find((opt: any) => opt.id === optionId);
-      return option ? option.label : optionId;
+      if (option) {
+        return option.label;
+      } else {
+        console.log('Option non trouvée pour ID:', optionId, 'dans les options:', question.options);
+        return `Option non trouvée (${optionId})`;
+      }
     });
     return labels.join('; ');
   } else {
     // For single choice questions
     if (question.type === 'radio') {
       const option = question.options?.find((opt: any) => opt.id === answer);
-      return option ? option.label : answer;
+      if (option) {
+        return option.label;
+      } else {
+        console.log('Option non trouvée pour ID:', answer, 'dans les options:', question.options);
+        return `Option non trouvée (${answer})`;
+      }
     } else if (question.type === 'yesno') {
       return answer === 'yes' ? 'Oui' : answer === 'no' ? 'Non' : answer;
     } else {
@@ -460,9 +474,26 @@ export const exportAllSurveys = (): void => {
   const surveys = getSurveys();
   const allResponses = getResponses();
   
+  // Format responses with readable labels
+  const formattedResponses = allResponses.map(response => {
+    const survey = surveys.find(s => s.id === response.surveyId);
+    if (!survey) return response;
+    
+    return {
+      ...response,
+      answers: response.answers.map(answer => {
+        const question = survey.questions.find(q => q.id === answer.questionId);
+        return {
+          ...answer,
+          value: question ? formatAnswerForExport(answer.value, question) : answer.value
+        };
+      })
+    };
+  });
+  
   const exportData = {
     surveys,
-    responses: allResponses,
+    responses: formattedResponses,
     exportedAt: new Date().toISOString(),
     version: '1.0'
   };
