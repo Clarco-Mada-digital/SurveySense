@@ -5,7 +5,7 @@ Ce document explique comment déployer l'application SurveySense sur GitHub Page
 ## Configuration effectuée
 
 ### 1. Configuration Vite
-- **Base path** : `/Questionaire-App/` pour la production
+- **Base path** : `/SurveySense/` pour la production
 - **Build optimisé** : Séparation des bundles pour de meilleures performances
 - **Sourcemaps** : Activés pour le débogage
 
@@ -36,7 +36,7 @@ Ce document explique comment déployer l'application SurveySense sur GitHub Page
 
 3. **Attendre le déploiement** :
    - L'action GitHub va s'exécuter automatiquement
-   - Le site sera disponible à l'URL : `https://[username].github.io/Questionaire-App/`
+   - Le site sera disponible à l'URL : `https://[username].github.io/SurveySense/`
 
 ### Méthode 2 : Manuel avec gh-pages
 
@@ -65,7 +65,7 @@ Ce document explique comment déployer l'application SurveySense sur GitHub Page
 
 ## Important
 
-- Le nom du repository doit être `Questionaire-App` pour que le base path fonctionne
+- Le nom du repository doit être `SurveySense` pour que le base path fonctionne
 - Si vous changez le nom, modifiez le base path dans `vite.config.ts`
 - L'application utilise le stockage local (localStorage), donc les données ne seront pas partagées entre utilisateurs
 
@@ -73,7 +73,7 @@ Ce document explique comment déployer l'application SurveySense sur GitHub Page
 
 Une fois déployé, votre application sera accessible à :
 ```
-https://[votre-username].github.io/Questionaire-App/
+https://[votre-username].github.io/SurveySense/
 ```
 
 ## Prochaines étapes

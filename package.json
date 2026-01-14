@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:github": "vite build --base=/Questionaire-App/",
+    "build:github": "vite build --base=/SurveySense/",
     "preview": "vite preview",
     "lint": "eslint --quiet ./src",
     "deploy": "npm run build:github && gh-pages -d dist"
