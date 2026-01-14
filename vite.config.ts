@@ -14,15 +14,10 @@ export default defineConfig(({ mode }) => ({
   base: mode === 'production' ? '/Questionaire-App/' : '/',
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs'],
-          charts: ['recharts']
-        }
+        manualChunks: undefined // Disable manual chunks for GitHub Pages
       }
     }
   },

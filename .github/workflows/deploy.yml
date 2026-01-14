@@ -38,7 +38,7 @@ jobs:
     - name: Build for GitHub Pages
       run: npm run build:github
       env:
-        VITE_BASE_URL: /SurveySense/
+        VITE_BASE_URL: /Questionaire-App/
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
