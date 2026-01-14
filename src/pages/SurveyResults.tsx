@@ -95,22 +95,12 @@ export default function SurveyResults() {
       answer !== undefined && answer !== null && answer !== ''
     );
 
-    // Debug: log pour voir les types de réponses
-    console.log(`Question ${questionId} (${question?.type}):`, {
-      question,
-      rawAnswers,
-      answers,
-      answerTypes: rawAnswers.map(a => typeof a)
-    });
-
     if (question.type === 'radio' || question.type === 'yesno') {
       const counts: Record<string, number> = {};
       answers.forEach(answer => {
         const key = String(answer);
         counts[key] = (counts[key] || 0) + 1;
       });
-
-      console.log(`Radio/YesNo counts for question ${questionId}:`, counts);
 
       return Object.entries(counts).map(([key, value]) => {
         let name = key;
@@ -131,8 +121,6 @@ export default function SurveyResults() {
         const arr = Array.isArray(answer) ? answer : 
           // If it's a string, split by '; ' to handle legacy format
           typeof answer === 'string' ? answer.split('; ').map(s => s.trim()).filter(Boolean) : [];
-        
-        console.log(`Checkbox answer processing:`, { original: answer, processed: arr });
         
         arr.forEach(optionId => {
           counts[optionId] = (counts[optionId] || 0) + 1;
@@ -191,16 +179,6 @@ export default function SurveyResults() {
                 Résultats
               </h1>
             </div>
-            {/* <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleExportCSV} className="hidden sm:flex">
-                <Download className="h-4 w-4 mr-2" />
-                Export CSV
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExportJSON} className="hidden sm:flex">
-                <Download className="h-4 w-4 mr-2" />
-                Export JSON
-              </Button>
-            </div> */}
           </div>
         </div>
       </header>

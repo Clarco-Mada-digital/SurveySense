@@ -56,18 +56,17 @@ export const getResponsesBySurveyId = (surveyId: string): SurveyResponse[] => {
 const formatAnswerForExport = (answer: any, question: any): string => {
   if (!answer) return '';
   
-  // Debug: log pour vérifier les données
-  console.log('formatAnswerForExport - question:', question);
-  console.log('formatAnswerForExport - answer:', answer);
-  
   if (Array.isArray(answer)) {
     // For checkbox questions - convert option IDs to labels
     const labels = answer.map(optionId => {
+      // Check if answer is already a label (not an ID)
+      if (typeof optionId === 'string' && !optionId.includes('-')) {
+        return optionId; // Already a label
+      }
       const option = question.options?.find((opt: any) => opt.id === optionId);
       if (option) {
         return option.label;
       } else {
-        console.log('Option non trouvée pour ID:', optionId, 'dans les options:', question.options);
         return `Option non trouvée (${optionId})`;
       }
     });
@@ -75,11 +74,14 @@ const formatAnswerForExport = (answer: any, question: any): string => {
   } else {
     // For single choice questions
     if (question.type === 'radio') {
+      // Check if answer is already a label (not an ID)
+      if (typeof answer === 'string' && !answer.includes('-')) {
+        return answer; // Already a label
+      }
       const option = question.options?.find((opt: any) => opt.id === answer);
       if (option) {
         return option.label;
       } else {
-        console.log('Option non trouvée pour ID:', answer, 'dans les options:', question.options);
         return `Option non trouvée (${answer})`;
       }
     } else if (question.type === 'yesno') {
