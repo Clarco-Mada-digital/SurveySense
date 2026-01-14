@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     }),
     react(),
   ],
-  base: mode === 'production' ? '/Questionaire-App/' : '/',
+  base: mode === 'production' ? '/SurveySense/' : '/',
   build: {
     outDir: 'dist',
     sourcemap: false,
