@@ -142,28 +142,34 @@ export default function SurveyResults() {
 
   if (!survey) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Chargement...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <p className="text-gray-400">Chargement...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="relative border-b border-white/10 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')}>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')} className="text-gray-300 hover:text-white hover:bg-white/10">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Retour</span>
               </Button>
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+              <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                 Résultats
               </h1>
             </div>
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={handleExportCSV} className="hidden sm:flex">
                 <Download className="h-4 w-4 mr-2" />
                 Export CSV
@@ -172,32 +178,32 @@ export default function SurveyResults() {
                 <Download className="h-4 w-4 mr-2" />
                 Export JSON
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
+      <div className="relative container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
         {/* Survey Info - Compact */}
-        <Card className="p-4 sm:p-6 mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100">
+        <Card className="p-4 sm:p-6 mb-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 line-clamp-2">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-100 mb-2 line-clamp-2">
                 {survey.title}
               </h2>
               {survey.description && (
-                <p className="text-sm sm:text-base text-gray-600 line-clamp-2">
+                <p className="text-sm sm:text-base text-gray-400 line-clamp-2">
                   {survey.description}
                 </p>
               )}
             </div>
             <div className="flex gap-4 sm:gap-8 text-xs sm:text-sm">
               <div className="text-center">
-                <div className="font-bold text-lg sm:text-xl text-indigo-600">{survey.questions.length}</div>
+                <div className="font-bold text-lg sm:text-xl text-blue-400">{survey.questions.length}</div>
                 <div className="text-gray-500">Questions</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-lg sm:text-xl text-purple-600">{responses.length}</div>
+                <div className="font-bold text-lg sm:text-xl text-indigo-400">{responses.length}</div>
                 <div className="text-gray-500">Réponses</div>
               </div>
             </div>
@@ -205,16 +211,16 @@ export default function SurveyResults() {
         </Card>
 
         {responses.length === 0 ? (
-          <Card className="p-6 sm:p-8 text-center">
+          <Card className="p-6 sm:p-8 text-center bg-slate-800/60 backdrop-blur-sm border border-white/10">
             <img 
               src="https://mgx-backend-cdn.metadl.com/generate/images/903894/2026-01-13/8a27dd6a-bd12-4fb0-b6fa-e919f906967d.png"
               alt="No responses"
               className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 opacity-50"
             />
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-100 mb-2">
               Aucune réponse pour le moment
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+            <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               Partagez le lien du questionnaire pour commencer à recevoir des réponses
             </p>
             <Button 
@@ -223,23 +229,23 @@ export default function SurveyResults() {
                 navigator.clipboard.writeText(link);
                 toast.success('Lien copié dans le presse-papier');
               }}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg"
             >
               Copier le lien du questionnaire
             </Button>
           </Card>
         ) : (
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="overview" className="flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-800/60 backdrop-blur-sm border border-white/10 p-1 rounded-lg">
+              <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white/10 data-[state=active]:text-gray-100 data-[state=active]:border-white/20 rounded-md">
                 <BarChart3 className="h-4 w-4" />
                 <span className="hidden sm:inline">Vue d'ensemble</span>
               </TabsTrigger>
-              <TabsTrigger value="questions" className="flex items-center gap-2">
+              <TabsTrigger value="questions" className="flex items-center gap-2 data-[state=active]:bg-white/10 data-[state=active]:text-gray-100 data-[state=active]:border-white/20 rounded-md">
                 <List className="h-4 w-4" />
                 <span className="hidden sm:inline">Questions</span>
               </TabsTrigger>
-              <TabsTrigger value="exports" className="flex items-center gap-2">
+              <TabsTrigger value="exports" className="flex items-center gap-2 data-[state=active]:bg-white/10 data-[state=active]:text-gray-100 data-[state=active]:border-white/20 rounded-md">
                 <Download className="h-4 w-4" />
                 <span className="hidden sm:inline">Exports</span>
               </TabsTrigger>
@@ -257,8 +263,8 @@ export default function SurveyResults() {
                     : [];
                   
                   return (
-                    <Card key={question.id} className="p-4 hover:shadow-md transition-shadow">
-                      <h4 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
+                    <Card key={question.id} className="p-4 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                      <h4 className="text-sm font-semibold text-gray-100 mb-2 line-clamp-2">
                         Q{index + 1}: {question.question}
                       </h4>
                       <div className="text-xs text-gray-500 mb-3">
@@ -273,7 +279,7 @@ export default function SurveyResults() {
                         textAnswers.length > 0 ? (
                           <div className="space-y-2">
                             {textAnswers.slice(0, 2).map((answer, idx) => (
-                              <div key={idx} className="text-xs text-gray-700 bg-gray-50 p-2 rounded truncate">
+                              <div key={idx} className="text-xs text-gray-300 bg-slate-700/30 p-2 rounded truncate">
                                 {answer}
                               </div>
                             ))}
@@ -282,7 +288,7 @@ export default function SurveyResults() {
                                 +{textAnswers.length - 2} autre(s) réponse(s)
                               </div>
                             )}
-                            <div className="text-xs text-gray-600 text-center pt-1">
+                            <div className="text-xs text-gray-400 text-center pt-1">
                               {textAnswers.length} réponse(s) au total
                             </div>
                           </div>
@@ -297,8 +303,8 @@ export default function SurveyResults() {
                           <div className="space-y-2">
                             {stats.slice(0, 3).map((item, idx) => (
                               <div key={idx} className="flex justify-between text-xs">
-                                <span className="truncate mr-2">{item.name}</span>
-                                <span className="font-medium">{item.value}</span>
+                                <span className="truncate mr-2 text-gray-300">{item.name}</span>
+                                <span className="font-medium text-gray-100">{item.value}</span>
                               </div>
                             ))}
                             {stats.length > 3 && (
@@ -325,6 +331,7 @@ export default function SurveyResults() {
                       const questionsTab = document.querySelector('[value="questions"]') as HTMLElement;
                       questionsTab?.click();
                     }}
+                    className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                   >
                     Voir toutes les questions
                   </Button>
@@ -340,8 +347,8 @@ export default function SurveyResults() {
                   : [];
 
                 return (
-                  <Card key={question.id} className="p-4 sm:p-6">
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+                  <Card key={question.id} className="p-4 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-100 mb-4">
                       {index + 1}. {question.question}
                     </h3>
 
@@ -370,15 +377,13 @@ export default function SurveyResults() {
                         </div>
                         <div className="space-y-2 sm:space-y-3">
                           {stats.map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
-                              <div className="flex items-center gap-2 sm:gap-3">
-                                <div 
-                                  className="w-3 h-3 sm:w-4 sm:h-4 rounded"
-                                  style={{ backgroundColor: COLORS[idx % COLORS.length] }}
-                                />
-                                <span className="text-sm sm:text-base font-medium truncate">{item.name}</span>
-                              </div>
-                              <span className="text-xs sm:text-sm text-gray-600">{item.value} réponses</span>
+                            <div key={idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-slate-700/30 rounded-lg">
+                              <div 
+                                className="w-3 h-3 sm:w-4 sm:h-4 rounded"
+                                style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+                              />
+                              <span className="text-sm sm:text-base font-medium truncate">{item.name}</span>
+                              <span className="text-xs sm:text-sm text-gray-400">{item.value} réponses</span>
                             </div>
                           ))}
                         </div>
@@ -389,7 +394,7 @@ export default function SurveyResults() {
                       <div className="h-64 sm:h-80">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={stats}>
-                            <CartesianGrid strokeDasharray="3 3" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                             <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                             <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip />
@@ -402,13 +407,13 @@ export default function SurveyResults() {
 
                     {textAnswers.length > 0 && (
                       <div className="space-y-3">
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className="text-sm font-medium text-gray-300 mb-2">
                           {textAnswers.length} réponse{textAnswers.length > 1 ? 's' : ''} :
                         </p>
                         <div className="space-y-2 max-h-64 sm:max-h-96 overflow-y-auto">
                           {textAnswers.map((answer, idx) => (
-                            <div key={idx} className="p-2 sm:p-3 bg-gray-50 rounded-lg border border-gray-200">
-                              <p className="text-xs sm:text-sm text-gray-700">{answer}</p>
+                            <div key={idx} className="p-2 sm:p-3 bg-slate-700/30 rounded-lg border border-white/5">
+                              <p className="text-xs sm:text-sm text-gray-100">{answer}</p>
                             </div>
                           ))}
                         </div>
@@ -420,14 +425,14 @@ export default function SurveyResults() {
             </TabsContent>
 
             <TabsContent value="exports" className="space-y-6">
-              <Card className="p-6">
+              <Card className="p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Filtres d'exportation</h3>
+                  <h3 className="text-lg font-semibold text-gray-100">Filtres d'exportation</h3>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setShowDateFilter(!showDateFilter)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                   >
                     <Filter className="h-4 w-4" />
                     {showDateFilter ? 'Masquer les filtres' : 'Afficher les filtres'}
@@ -435,28 +440,28 @@ export default function SurveyResults() {
                 </div>
 
                 {showDateFilter && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg border">
+                  <div className="space-y-4 p-4 bg-slate-700/30 rounded-lg border border-white/10">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           Date de début
                         </label>
                         <Input
                           type="date"
                           value={startDate}
                           onChange={(e) => setStartDate(e.target.value)}
-                          className="w-full"
+                          className="w-full bg-slate-700/50 border-white/10 text-gray-100 focus:border-blue-500/30"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           Date de fin
                         </label>
                         <Input
                           type="date"
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
-                          className="w-full"
+                          className="w-full bg-slate-700/50 border-white/10 text-gray-100 focus:border-blue-500/30"
                         />
                       </div>
                     </div>
@@ -465,6 +470,7 @@ export default function SurveyResults() {
                         variant="outline"
                         size="sm"
                         onClick={clearDateFilter}
+                        className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                       >
                         Réinitialiser
                       </Button>
@@ -475,13 +481,12 @@ export default function SurveyResults() {
                   </div>
                 )}
               </Card>
-
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Exporter les données</h3>
+              <Card className="p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                <h3 className="text-lg font-semibold text-gray-100 mb-4">Exporter les données</h3>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Button 
                     onClick={handleExportCSV} 
-                    className="w-full h-auto p-4 flex flex-col items-center gap-2"
+                    className="w-full h-auto p-4 flex flex-col items-center gap-2 border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                     variant="outline"
                   >
                     <Download className="h-8 w-8" />
@@ -494,7 +499,7 @@ export default function SurveyResults() {
                   </Button>
                   <Button 
                     onClick={handleExportJSON} 
-                    className="w-full h-auto p-4 flex flex-col items-center gap-2"
+                    className="w-full h-auto p-4 flex flex-col items-center gap-2 border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                     variant="outline"
                   >
                     <Download className="h-8 w-8" />
@@ -508,28 +513,26 @@ export default function SurveyResults() {
                 </div>
               </Card>
 
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Statistiques générales</h3>
+              <Card className="p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                <h3 className="text-lg font-semibold text-gray-100 mb-4">Statistiques générales</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                    <div className="text-2xl font-bold text-indigo-600">{responses.length}</div>
-                    <div className="text-sm text-gray-600">Total réponses</div>
+                  <div className="text-center p-4 bg-slate-700/30 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-blue-400">{responses.length}</div>
+                    <div className="text-sm text-gray-500">Total réponses</div>
                   </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">{survey.questions.length}</div>
-                    <div className="text-sm text-gray-600">Questions</div>
+                  <div className="text-center p-4 bg-slate-700/30 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-indigo-400">{survey.questions.length}</div>
+                    <div className="text-sm text-gray-500">Questions</div>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">
+                  <div className="text-center p-4 bg-slate-700/30 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-green-400">
                       {Math.round((responses.length / Math.max(survey.questions.length, 1)) * 100)}%
                     </div>
-                    <div className="text-sm text-gray-600">Taux de réponse</div>
+                    <div className="text-sm text-gray-500">Taux de réponse</div>
                   </div>
-                  <div className="text-center p-4 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">
-                      {survey.questions.filter(q => q.required).length}
-                    </div>
-                    <div className="text-sm text-gray-600">Questions obligatoires</div>
+                  <div className="text-center p-4 bg-slate-700/30 rounded-lg border border-white/10">
+                    <div className="text-2xl font-bold text-orange-400">{survey.questions.filter(q => q.required).length}</div>
+                    <div className="text-sm text-gray-500">Questions obligatoires</div>
                   </div>
                 </div>
               </Card>

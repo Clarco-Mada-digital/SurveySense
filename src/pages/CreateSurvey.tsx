@@ -106,95 +106,101 @@ export default function CreateSurvey() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="relative border-b border-white/10 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')} className="text-gray-300 hover:text-white hover:bg-white/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Retour</span>
             </Button>
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+            <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
               {isEditing ? 'Modifier' : 'Créer'} un questionnaire
             </h1>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
+      <div className="relative container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
         {/* Creator and Survey Information - Side by Side */}
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Creator Information */}
-          <Card className="p-4 sm:p-6">
+          <Card className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
             <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center gap-2">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold text-xs sm:text-sm">1</span>
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-semibold text-xs sm:text-sm">1</span>
               </div>
-              <span className="text-sm sm:text-base">Informations du créateur</span>
+              <span className="text-gray-100 text-sm sm:text-base">Informations du créateur</span>
             </h2>
             <div className="space-y-3 sm:space-y-4">
               <div>
-                <Label htmlFor="creatorName" className="text-xs sm:text-sm font-medium">Nom *</Label>
+                <Label htmlFor="creatorName" className="text-xs sm:text-sm font-medium text-gray-300">Nom *</Label>
                 <Input
                   id="creatorName"
                   value={survey.creatorName}
                   onChange={(e) => setSurvey({ ...survey, creatorName: e.target.value })}
                   placeholder="Votre nom"
-                  className="mt-1"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               </div>
               <div>
-                <Label htmlFor="creatorEmail" className="text-xs sm:text-sm font-medium">Email *</Label>
+                <Label htmlFor="creatorEmail" className="text-xs sm:text-sm font-medium text-gray-300">Email *</Label>
                 <Input
                   id="creatorEmail"
                   type="email"
                   value={survey.creatorEmail}
                   onChange={(e) => setSurvey({ ...survey, creatorEmail: e.target.value })}
                   placeholder="votre@email.com"
-                  className="mt-1"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               </div>
               <div>
-                <Label htmlFor="creatorOrganization" className="text-xs sm:text-sm font-medium">Organisation</Label>
+                <Label htmlFor="creatorOrganization" className="text-xs sm:text-sm font-medium text-gray-300">Organisation</Label>
                 <Input
                   id="creatorOrganization"
                   value={survey.creatorOrganization}
                   onChange={(e) => setSurvey({ ...survey, creatorOrganization: e.target.value })}
                   placeholder="Nom de votre organisation"
-                  className="mt-1"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               </div>
             </div>
           </Card>
 
           {/* Survey Information */}
-          <Card className="p-4 sm:p-6">
+          <Card className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
             <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center gap-2">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold text-xs sm:text-sm">2</span>
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-semibold text-xs sm:text-sm">2</span>
               </div>
-              <span className="text-sm sm:text-base">Informations du questionnaire</span>
+              <span className="text-gray-100 text-sm sm:text-base">Informations du questionnaire</span>
             </h2>
             <div className="space-y-3 sm:space-y-4">
               <div>
-                <Label htmlFor="title" className="text-xs sm:text-sm font-medium">Titre *</Label>
+                <Label htmlFor="title" className="text-xs sm:text-sm font-medium text-gray-300">Titre *</Label>
                 <Input
                   id="title"
                   value={survey.title}
                   onChange={(e) => setSurvey({ ...survey, title: e.target.value })}
                   placeholder="Titre de votre questionnaire"
-                  className="mt-1"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               </div>
               <div>
-                <Label htmlFor="description" className="text-xs sm:text-sm font-medium">Description</Label>
+                <Label htmlFor="description" className="text-xs sm:text-sm font-medium text-gray-300">Description</Label>
                 <Textarea
                   id="description"
                   value={survey.description}
                   onChange={(e) => setSurvey({ ...survey, description: e.target.value })}
                   placeholder="Décrivez l'objectif de votre questionnaire..."
-                  className="mt-1"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                   rows={3}
                 />
               </div>
@@ -203,21 +209,21 @@ export default function CreateSurvey() {
         </div>
 
         {/* Questions */}
-        <Card className="mb-6 sm:mb-8">
-          <div className="p-4 sm:p-6 border-b border-gray-100">
+        <Card className="mb-6 sm:mb-8 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+          <div className="p-4 sm:p-6 border-b border-white/10">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <span className="text-indigo-600 font-semibold text-xs sm:text-sm">3</span>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold text-xs sm:text-sm">3</span>
                 </div>
-                <span className="text-sm sm:text-base">Questions</span>
+                <span className="text-gray-100 text-sm sm:text-base">Questions</span>
                 {survey.questions && survey.questions.length > 0 && (
-                  <span className="ml-2 px-2 py-1 bg-indigo-50 text-indigo-600 text-xs sm:text-sm rounded-full">
+                  <span className="ml-2 px-2 py-1 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-300 text-xs sm:text-sm rounded-full">
                     {survey.questions.length}
                   </span>
                 )}
               </h2>
-              <Button onClick={addQuestion} className="bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">
+              <Button onClick={addQuestion} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Ajouter une question
               </Button>
@@ -238,11 +244,11 @@ export default function CreateSurvey() {
 
               {(!survey.questions || survey.questions.length === 0) && (
                 <div className="text-center py-8 sm:py-12">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                    <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 flex items-center justify-center bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-3xl">
+                    <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
                   </div>
-                  <p className="text-gray-500 mb-3 sm:mb-4 text-sm sm:text-base">Aucune question ajoutée</p>
-                  <Button onClick={addQuestion} variant="outline" className="w-full sm:w-auto">
+                  <p className="text-gray-400 mb-4 text-sm sm:text-base">Aucune question ajoutée</p>
+                  <Button onClick={addQuestion} variant="outline" className="w-full sm:w-auto border-blue-500/30 text-blue-300 hover:bg-blue-500/10">
                     <Plus className="h-4 w-4 mr-2" />
                     Ajouter votre première question
                   </Button>
@@ -251,11 +257,11 @@ export default function CreateSurvey() {
 
               {/* Add question button at the bottom */}
               {survey.questions && survey.questions.length > 0 && (
-                <div className="pt-4 border-t border-gray-100">
+                <div className="pt-4 border-t border-white/10">
                   <Button 
                     onClick={addQuestion} 
                     variant="outline" 
-                    className="w-full border-dashed border-gray-300 hover:border-indigo-400 hover:bg-indigo-50"
+                    className="w-full border-dashed border-blue-500/30 text-blue-300 hover:bg-blue-500/10 hover:border-blue-400/50"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Ajouter une autre question
@@ -268,10 +274,10 @@ export default function CreateSurvey() {
 
         {/* Save Button */}
         <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
-          <Button variant="outline" onClick={() => navigate('/surveys')} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={() => navigate('/surveys')} className="w-full sm:w-auto border-blue-500/30 text-blue-300 hover:bg-blue-500/10">
             Annuler
           </Button>
-          <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">
+          <Button onClick={handleSave} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg w-full sm:w-auto">
             <Save className="h-4 w-4 mr-2" />
             {isEditing ? 'Mettre à jour' : 'Créer le questionnaire'}
           </Button>

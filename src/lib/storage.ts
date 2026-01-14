@@ -52,6 +52,30 @@ export const getResponsesBySurveyId = (surveyId: string): SurveyResponse[] => {
   return getResponses().filter(r => r.surveyId === surveyId);
 };
 
+// Helper function to format answer value for export
+const formatAnswerForExport = (answer: any, question: any): string => {
+  if (!answer) return '';
+  
+  if (Array.isArray(answer)) {
+    // For checkbox questions - convert option IDs to labels
+    const labels = answer.map(optionId => {
+      const option = question.options?.find((opt: any) => opt.id === optionId);
+      return option ? option.label : optionId;
+    });
+    return labels.join('; ');
+  } else {
+    // For single choice questions
+    if (question.type === 'radio') {
+      const option = question.options?.find((opt: any) => opt.id === answer);
+      return option ? option.label : answer;
+    } else if (question.type === 'yesno') {
+      return answer === 'yes' ? 'Oui' : answer === 'no' ? 'Non' : answer;
+    } else {
+      return String(answer);
+    }
+  }
+};
+
 // Export functions
 export const exportSurveyAsJSON = (survey: Survey): void => {
   const dataStr = JSON.stringify(survey, null, 2);
@@ -79,11 +103,7 @@ export const exportResponsesAsCSV = (surveyId: string): void => {
     survey.questions.forEach(question => {
       const answer = response.answers.find(a => a.questionId === question.id);
       if (answer) {
-        if (Array.isArray(answer.value)) {
-          row.push(answer.value.join('; '));
-        } else {
-          row.push(String(answer.value));
-        }
+        row.push(formatAnswerForExport(answer.value, question));
       } else {
         row.push('');
       }
@@ -113,9 +133,21 @@ export const exportFullSurveyData = (surveyId: string): void => {
   
   if (!survey) return;
   
+  // Format responses with readable labels
+  const formattedResponses = responses.map(response => ({
+    ...response,
+    answers: response.answers.map(answer => {
+      const question = survey.questions.find(q => q.id === answer.questionId);
+      return {
+        ...answer,
+        value: question ? formatAnswerForExport(answer.value, question) : answer.value
+      };
+    })
+  }));
+  
   const fullData = {
     survey,
-    responses,
+    responses: formattedResponses,
     exportedAt: new Date().toISOString()
   };
   
@@ -579,12 +611,23 @@ export const exportResponsesWithDateFilter = (
   }
   
   // Create export data in importable format
+  const formattedResponses = responses.map(response => ({
+    ...response,
+    answers: response.answers.map(answer => {
+      const question = survey.questions.find(q => q.id === answer.questionId);
+      return {
+        ...answer,
+        value: question ? formatAnswerForExport(answer.value, question) : answer.value
+      };
+    })
+  }));
+
   const exportData = {
     survey: {
       ...survey,
       exportedAt: new Date().toISOString()
     },
-    responses: responses,
+    responses: formattedResponses,
     metadata: {
       totalResponses: responses.length,
       dateRange: {
@@ -642,11 +685,7 @@ export const exportResponsesAsCSVWithDateFilter = (
     survey.questions.forEach(question => {
       const answer = response.answers.find(a => a.questionId === question.id);
       if (answer) {
-        if (Array.isArray(answer.value)) {
-          row.push(answer.value.join('; '));
-        } else {
-          row.push(String(answer.value));
-        }
+        row.push(formatAnswerForExport(answer.value, question));
       } else {
         row.push('');
       }

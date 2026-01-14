@@ -112,45 +112,51 @@ export default function ImportExport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="relative border-b border-white/10 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')} className="text-gray-300 hover:text-white hover:bg-white/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Retour</span>
             </Button>
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+            <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
               Import / Export
             </h1>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
+      <div className="relative container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
         {/* Import Section */}
         <section className="mb-8 sm:mb-12">
           <div className="flex items-center gap-2 mb-6">
-            <Upload className="h-5 w-5 text-indigo-600" />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Importer des données</h2>
+            <Upload className="h-5 w-5 text-blue-400" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-100">Importer des données</h2>
           </div>
 
           {/* Import Type Selection */}
-          <Card className="p-4 sm:p-6 mb-6">
+          <Card className="p-4 sm:p-6 mb-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Type d'importation
                 </label>
                 <Select value={importType} onValueChange={(value: any) => setImportType(value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-slate-700/50 border-white/10 text-gray-100 focus:border-blue-500/30">
                     <SelectValue placeholder="Choisissez le type d'importation" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="survey">Importer un questionnaire</SelectItem>
-                    <SelectItem value="responses">Importer des réponses</SelectItem>
-                    <SelectItem value="all">Importer toutes les données (backup)</SelectItem>
+                  <SelectContent className="bg-slate-800 border border-white/10">
+                    <SelectItem value="survey" className="text-gray-100 focus:bg-blue-500/20">Importer un questionnaire</SelectItem>
+                    <SelectItem value="responses" className="text-gray-100 focus:bg-blue-500/20">Importer des réponses</SelectItem>
+                    <SelectItem value="all" className="text-gray-100 focus:bg-blue-500/20">Importer toutes les données (backup)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -158,16 +164,16 @@ export default function ImportExport() {
               {/* Target Survey Selection for Responses */}
               {importType === 'responses' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Questionnaire cible
                   </label>
                   <Select value={targetSurveyId} onValueChange={setTargetSurveyId}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-slate-700/50 border-white/10 text-gray-100 focus:border-blue-500/30">
                       <SelectValue placeholder="Sélectionnez un questionnaire" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-slate-800 border border-white/10">
                       {surveys.map((survey) => (
-                        <SelectItem key={survey.id} value={survey.id}>
+                        <SelectItem key={survey.id} value={survey.id} className="text-gray-100 focus:bg-blue-500/20">
                           {survey.title}
                         </SelectItem>
                       ))}
@@ -181,9 +187,9 @@ export default function ImportExport() {
           {/* File Upload Areas */}
           <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Survey Import */}
-            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden ${
-              importType === 'survey' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200'
-            } ${successfulImports.has('survey') ? 'ring-2 ring-green-400 ring-opacity-50' : ''}`}>
+            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden bg-slate-800/60 backdrop-blur-sm ${
+              importType === 'survey' ? 'border-blue-500 bg-blue-500/10' : 'border-white/10'
+            } ${successfulImports.has('survey') ? 'ring-2 ring-green-400 ring-opacity-30' : ''}`}>
               {successfulImports.has('survey') && (
                 <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1 animate-bounce">
                   <CheckCircle className="h-4 w-4" />
@@ -191,10 +197,10 @@ export default function ImportExport() {
               )}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-indigo-600" />
-                  <h3 className="font-semibold text-gray-900">Questionnaire</h3>
+                  <FileText className="h-5 w-5 text-blue-400" />
+                  <h3 className="font-semibold text-gray-100">Questionnaire</h3>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   Importez un questionnaire depuis un fichier JSON
                 </p>
                 <input
@@ -222,9 +228,9 @@ export default function ImportExport() {
             </Card>
 
             {/* Responses Import */}
-            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden ${
-              importType === 'responses' ? 'border-purple-500 bg-purple-50' : 'border-gray-200'
-            } ${successfulImports.has('responses') ? 'ring-2 ring-green-400 ring-opacity-50' : ''}`}>
+            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden bg-slate-800/60 backdrop-blur-sm ${
+              importType === 'responses' ? 'border-purple-500 bg-purple-500/10' : 'border-white/10'
+            } ${successfulImports.has('responses') ? 'ring-2 ring-green-400 ring-opacity-30' : ''}`}>
               {successfulImports.has('responses') && (
                 <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1 animate-bounce">
                   <CheckCircle className="h-4 w-4" />
@@ -232,10 +238,10 @@ export default function ImportExport() {
               )}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-purple-600" />
-                  <h3 className="font-semibold text-gray-900">Réponses</h3>
+                  <Database className="h-5 w-5 text-purple-400" />
+                  <h3 className="font-semibold text-gray-100">Réponses</h3>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   Importez des réponses pour un questionnaire existant
                 </p>
                 <input
@@ -263,9 +269,9 @@ export default function ImportExport() {
             </Card>
 
             {/* All Data Import */}
-            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden ${
-              importType === 'all' ? 'border-green-500 bg-green-50' : 'border-gray-200'
-            } ${successfulImports.has('all') ? 'ring-2 ring-green-400 ring-opacity-50' : ''}`}>
+            <Card className={`p-4 sm:p-6 border-2 transition-all relative overflow-hidden bg-slate-800/60 backdrop-blur-sm ${
+              importType === 'all' ? 'border-green-500 bg-green-500/10' : 'border-white/10'
+            } ${successfulImports.has('all') ? 'ring-2 ring-green-400 ring-opacity-30' : ''}`}>
               {successfulImports.has('all') && (
                 <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1 animate-bounce">
                   <CheckCircle className="h-4 w-4" />
@@ -273,10 +279,10 @@ export default function ImportExport() {
               )}
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-green-600" />
-                  <h3 className="font-semibold text-gray-900">Backup complet</h3>
+                  <Database className="h-5 w-5 text-green-400" />
+                  <h3 className="font-semibold text-gray-100">Backup complet</h3>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   Restaurez tous vos questionnaires et réponses
                 </p>
                 <input
@@ -306,34 +312,34 @@ export default function ImportExport() {
 
           {/* Import Result */}
           {importResult && (
-            <Card className={`mt-6 p-4 sm:p-6 border-2 transition-all animate-in slide-in-from-top-2 duration-300 ${
+            <Card className={`mt-6 p-4 sm:p-6 border-2 transition-all animate-in slide-in-from-top-2 duration-300 bg-slate-800/60 backdrop-blur-sm ${
               importResult.success 
-                ? 'border-green-300 bg-green-50 shadow-green-100 shadow-lg' 
-                : 'border-red-300 bg-red-50 shadow-red-100 shadow-lg'
+                ? 'border-green-400 bg-green-500/10 shadow-green-400/20 shadow-lg' 
+                : 'border-red-400 bg-red-500/10 shadow-red-400/20 shadow-lg'
             }`}>
               <div className="flex items-start gap-3">
                 {importResult.success ? (
                   <div className="flex-shrink-0">
-                    <CheckCircle className="h-6 w-6 text-green-600 animate-pulse" />
+                    <CheckCircle className="h-6 w-6 text-green-400 animate-pulse" />
                   </div>
                 ) : (
                   <div className="flex-shrink-0">
-                    <AlertCircle className="h-6 w-6 text-red-600" />
+                    <AlertCircle className="h-6 w-6 text-red-400" />
                   </div>
                 )}
                 <div className="flex-1">
                   <h4 className={`font-semibold mb-2 text-base ${
-                    importResult.success ? 'text-green-900' : 'text-red-900'
+                    importResult.success ? 'text-green-300' : 'text-red-300'
                   }`}>
                     {importResult.success ? '✅ Importation réussie' : '❌ Erreur d\'importation'}
                   </h4>
                   <p className={`text-sm mb-2 ${
-                    importResult.success ? 'text-green-700' : 'text-red-700'
+                    importResult.success ? 'text-green-400' : 'text-red-400'
                   }`}>
                     {importResult.message}
                   </p>
                   {importResult.success && (
-                    <div className="flex items-center gap-4 text-xs text-green-600">
+                    <div className="flex items-center gap-4 text-xs text-green-400">
                       {importResult.importedCount && (
                         <span className="flex items-center gap-1">
                           <Database className="h-3 w-3" />
@@ -355,12 +361,12 @@ export default function ImportExport() {
                     </div>
                   )}
                   {importResult.success && (
-                    <div className="mt-3 pt-3 border-t border-green-200">
+                    <div className="mt-3 pt-3 border-t border-green-400/30">
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => setImportResult(null)}
-                        className="text-green-700 border-green-300 hover:bg-green-100"
+                        className="text-green-400 border-green-500/30 hover:bg-green-500/10"
                       >
                         Masquer ce message
                       </Button>
@@ -375,23 +381,23 @@ export default function ImportExport() {
         {/* Export Section */}
         <section>
           <div className="flex items-center gap-2 mb-6">
-            <Download className="h-5 w-5 text-indigo-600" />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Exporter des données</h2>
+            <Download className="h-5 w-5 text-blue-400" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-100">Exporter des données</h2>
           </div>
 
           <div className="space-y-4 sm:space-y-6">
             {/* Export All */}
-            <Card className="p-4 sm:p-6">
+            <Card className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Exporter toutes les données</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-gray-100 mb-2">Exporter toutes les données</h3>
+                  <p className="text-sm text-gray-400">
                     Téléchargez tous vos questionnaires et réponses dans un fichier de backup
                   </p>
                 </div>
                 <Button
                   onClick={handleExportAllSurveys}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                   variant="outline"
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -402,17 +408,17 @@ export default function ImportExport() {
 
             {/* Individual Survey Exports */}
             {surveys.length > 0 && (
-              <Card className="p-4 sm:p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Exporter des questionnaires individuels</h3>
+              <Card className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                <h3 className="font-semibold text-gray-100 mb-4">Exporter des questionnaires individuels</h3>
                 <div className="space-y-3">
                   {surveys.map((survey) => (
                     <div
                       key={survey.id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-gray-50 rounded-lg"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-slate-700/30 rounded-lg border border-white/5"
                     >
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 truncate">{survey.title}</h4>
-                        <p className="text-sm text-gray-600">
+                        <h4 className="font-medium text-gray-100 truncate">{survey.title}</h4>
+                        <p className="text-sm text-gray-400">
                           {survey.questions.length} questions • {getResponsesBySurveyId(survey.id).length} réponses
                         </p>
                       </div>
@@ -421,6 +427,7 @@ export default function ImportExport() {
                           size="sm"
                           onClick={() => handleExportSurvey(survey.id)}
                           variant="outline"
+                          className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                         >
                           <Download className="h-4 w-4 mr-1" />
                           Q
@@ -432,6 +439,7 @@ export default function ImportExport() {
                             toast.success('Réponses exportées en CSV');
                           }}
                           variant="outline"
+                          className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                         >
                           <Download className="h-4 w-4 mr-1" />
                           CSV
@@ -443,6 +451,7 @@ export default function ImportExport() {
                             toast.success('Données complètes exportées');
                           }}
                           variant="outline"
+                          className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                         >
                           <Download className="h-4 w-4 mr-1" />
                           Tout
@@ -455,8 +464,8 @@ export default function ImportExport() {
             )}
 
             {surveys.length === 0 && (
-              <Card className="p-6 text-center">
-                <p className="text-gray-600">
+              <Card className="p-6 text-center bg-slate-800/60 backdrop-blur-sm border border-white/10">
+                <p className="text-gray-400">
                   Aucun questionnaire à exporter. Créez d'abord des questionnaires.
                 </p>
               </Card>

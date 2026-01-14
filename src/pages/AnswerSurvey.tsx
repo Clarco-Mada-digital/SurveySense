@@ -78,28 +78,42 @@ export default function AnswerSurvey() {
 
   if (!survey) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Chargement...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <p className="text-gray-400">Chargement...</p>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-6">
-        <Card className="max-w-md w-full p-8 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
+        {/* Animated background elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-600/10 to-emerald-600/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-600/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+        
+        <Card className="max-w-md w-full p-8 bg-slate-800/60 backdrop-blur-sm border border-white/10 text-center">
           <img 
             src="https://mgx-backend-cdn.metadl.com/generate/images/903894/2026-01-13/85fd0b4a-a59c-4b71-aa64-5b13fcc428f1.png"
             alt="Success"
             className="w-24 h-24 mx-auto mb-6"
           />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Merci !</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-gray-100 mb-2">Merci !</h2>
+          <p className="text-gray-400 mb-6">
             Votre réponse a été enregistrée avec succès.
           </p>
-          <Button onClick={() => navigate('/')} className="w-full">
-            Retour à l'accueil
-          </Button>
+          <div className="space-y-3">
+            <Button onClick={() => navigate('/surveys')} variant="outline" className="w-full border-blue-500/30 text-blue-300 hover:bg-blue-500/10">
+              Retour à la liste des questionnaires
+            </Button>
+            <Button onClick={() => {
+              setSubmitted(false);
+              setAnswers({});
+            }} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg">
+              Répondre à nouveau à ce questionnaire
+            </Button>
+          </div>
         </Card>
       </div>
     );
@@ -113,11 +127,17 @@ export default function AnswerSurvey() {
   const progress = (answeredCount / survey.questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="relative border-b border-white/10 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/surveys')} className="text-gray-300 hover:text-white hover:bg-white/10">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour
           </Button>
@@ -126,10 +146,10 @@ export default function AnswerSurvey() {
 
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-3xl">
         {/* Survey Header */}
-        <Card className="p-4 sm:p-8 mb-6">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{survey.title}</h1>
+        <Card className="p-4 sm:p-8 mb-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-100 mb-2">{survey.title}</h1>
           {survey.description && (
-            <p className="text-sm sm:text-base text-gray-600 mb-4">{survey.description}</p>
+            <p className="text-sm sm:text-base text-gray-400 mb-4">{survey.description}</p>
           )}
           <div className="text-xs sm:text-sm text-gray-500 space-y-1">
             <p>Créé par : {survey.creatorName}</p>
@@ -141,8 +161,8 @@ export default function AnswerSurvey() {
 
         {/* Progress - Sticky */}
         <div className="sticky top-16 sm:top-20 z-40 mb-6">
-          <Card className="p-3 sm:p-4 bg-white border shadow-sm">
-            <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
+          <Card className="p-3 sm:p-4 bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-sm">
+            <div className="flex justify-between text-xs sm:text-sm text-gray-400 mb-2">
               <span>Progression</span>
               <span>{answeredCount} / {survey.questions.length} questions</span>
             </div>
@@ -153,10 +173,10 @@ export default function AnswerSurvey() {
         {/* Questions */}
         <div className="space-y-4 sm:space-y-6">
           {survey.questions.map((question, index) => (
-            <Card key={question.id} className="p-4 sm:p-6">
-              <Label className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 block">
+            <Card key={question.id} className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
+              <Label className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 block text-gray-100">
                 {index + 1}. {question.question}
-                {question.required && <span className="text-red-500 ml-1">*</span>}
+                {question.required && <span className="text-red-400 ml-1">*</span>}
               </Label>
 
               {question.type === 'text' && (
@@ -164,7 +184,7 @@ export default function AnswerSurvey() {
                   value={(answers[question.id] as string) || ''}
                   onChange={(e) => updateAnswer(question.id, e.target.value)}
                   placeholder="Votre réponse..."
-                  className="text-sm"
+                  className="text-sm bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               )}
 
@@ -174,7 +194,7 @@ export default function AnswerSurvey() {
                   onChange={(e) => updateAnswer(question.id, e.target.value)}
                   placeholder="Votre réponse..."
                   rows={4}
-                  className="text-sm"
+                  className="text-sm bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
                 />
               )}
 
@@ -185,8 +205,8 @@ export default function AnswerSurvey() {
                 >
                   {question.options?.map((option) => (
                     <div key={option.id} className="flex items-center space-x-2 sm:space-x-3">
-                      <RadioGroupItem value={option.id} id={option.id} className="h-4 w-4" />
-                      <Label htmlFor={option.id} className="font-normal cursor-pointer text-sm sm:text-base">
+                      <RadioGroupItem value={option.id} id={option.id} className="h-4 w-4 border-blue-500/30" />
+                      <Label htmlFor={option.id} className="font-normal cursor-pointer text-sm sm:text-base text-gray-100">
                         {option.label}
                       </Label>
                     </div>
@@ -202,9 +222,9 @@ export default function AnswerSurvey() {
                         id={option.id}
                         checked={((answers[question.id] as string[]) || []).includes(option.id)}
                         onCheckedChange={() => toggleCheckbox(question.id, option.id)}
-                        className="h-4 w-4"
+                        className="h-4 w-4 border-blue-500/30"
                       />
-                      <Label htmlFor={option.id} className="font-normal cursor-pointer text-sm sm:text-base">
+                      <Label htmlFor={option.id} className="font-normal cursor-pointer text-sm sm:text-base text-gray-100">
                         {option.label}
                       </Label>
                     </div>
@@ -222,7 +242,11 @@ export default function AnswerSurvey() {
                       key={value}
                       variant={answers[question.id] === value ? 'default' : 'outline'}
                       onClick={() => updateAnswer(question.id, value)}
-                      className="flex-1 min-w-[32px] sm:min-w-[40px] h-8 sm:h-10 text-xs sm:text-sm"
+                      className={`flex-1 min-w-[32px] sm:min-w-[40px] h-8 sm:h-10 text-xs sm:text-sm ${
+                        answers[question.id] === value 
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg' 
+                          : 'bg-slate-700/50 border-blue-500/30 text-blue-300 hover:bg-blue-500/10 hover:border-blue-400/50'
+                      }`}
                     >
                       {value}
                     </Button>
@@ -236,14 +260,14 @@ export default function AnswerSurvey() {
                   onValueChange={(value) => updateAnswer(question.id, value)}
                 >
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <RadioGroupItem value="yes" id={`${question.id}-yes`} className="h-4 w-4" />
-                    <Label htmlFor={`${question.id}-yes`} className="font-normal cursor-pointer text-sm sm:text-base">
+                    <RadioGroupItem value="yes" id={`${question.id}-yes`} className="h-4 w-4 border-blue-500/30" />
+                    <Label htmlFor={`${question.id}-yes`} className="font-normal cursor-pointer text-sm sm:text-base text-gray-100">
                       Oui
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <RadioGroupItem value="no" id={`${question.id}-no`} className="h-4 w-4" />
-                    <Label htmlFor={`${question.id}-no`} className="font-normal cursor-pointer text-sm sm:text-base">
+                    <RadioGroupItem value="no" id={`${question.id}-no`} className="h-4 w-4 border-blue-500/30" />
+                    <Label htmlFor={`${question.id}-no`} className="font-normal cursor-pointer text-sm sm:text-base text-gray-100">
                       Non
                     </Label>
                   </div>
@@ -258,7 +282,7 @@ export default function AnswerSurvey() {
           <Button 
             onClick={handleSubmit} 
             size="lg" 
-            className="bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg w-full sm:w-auto"
           >
             <Send className="h-4 w-4 mr-2" />
             Soumettre mes réponses
