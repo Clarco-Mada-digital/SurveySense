@@ -11,6 +11,21 @@ export default defineConfig(({ mode }) => ({
     }),
     react(),
   ],
+  base: mode === 'production' ? '/Questionaire-App/' : '/',
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs'],
+          charts: ['recharts']
+        }
+      }
+    }
+  },
   server: {
     watch: { usePolling: true, interval: 800 /* 300~1500 */ },
   },
