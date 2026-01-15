@@ -33,6 +33,7 @@ export default function SurveyResults() {
   const [showDateFilter, setShowDateFilter] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [pinInput, setPinInput] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (id) {
@@ -57,6 +58,7 @@ export default function SurveyResults() {
         toast.error('Questionnaire introuvable');
         navigate('/surveys');
       }
+      setIsLoading(false);
     }
   }, [id, navigate]);
 
@@ -173,6 +175,17 @@ export default function SurveyResults() {
 
     return null;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-gray-400 animate-pulse">Chargement des analyses...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

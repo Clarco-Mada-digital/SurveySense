@@ -25,8 +25,9 @@ export default function CreateSurvey() {
     questions: []
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!isEditing);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!isEditing); // New surveys (not isEditing) are authenticated
   const [pinInput, setPinInput] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(isEditing);
 
   useEffect(() => {
     if (isEditing && id) {
@@ -41,6 +42,7 @@ export default function CreateSurvey() {
         toast.error('Questionnaire introuvable');
         navigate('/surveys');
       }
+      setIsLoading(false);
     }
   }, [id, isEditing, navigate]);
 
@@ -138,6 +140,17 @@ export default function CreateSurvey() {
     toast.success(isEditing ? 'Questionnaire mis à jour' : 'Questionnaire créé avec succès');
     navigate('/surveys');
   };
+
+  if (isLoading && isEditing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-gray-400 animate-pulse">Vérification de la sécurité...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated && isEditing) {
     return (
