@@ -100,19 +100,21 @@ export default function SurveyList() {
                 variant="outline"
                 size="sm"
                 onClick={() => navigate('/import-export')}
-                className="hidden sm:flex border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
+                className="flex border-blue-500/30 text-blue-300 hover:bg-blue-500/10 flex-1 sm:flex-none"
               >
                 <Database className="h-4 w-4 mr-2" />
-                Import/Export
+                <span className="hidden sm:inline">Import/Export</span>
+                <span className="sm:hidden">Import</span>
               </Button>
               <Button
                 onClick={() => navigate('/create')}
                 size="sm"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg w-full sm:w-auto"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg flex-1 sm:flex-none"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Créer un questionnaire</span>
-                <span className="sm:hidden">Créer</span>
+                <span className="sm:inline hidden">Créer</span>
+                <span className="sm:hidden">Nouveau</span>
               </Button>
             </div>
           </div>
