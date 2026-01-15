@@ -17,7 +17,7 @@ import {
   Lock,
   Shield
 } from 'lucide-react';
-import { getSurveys, deleteSurvey, getResponsesBySurveyId } from '@/lib/storage';
+import { getSurveys, deleteSurvey, getResponsesBySurveyId, verifyPin } from '@/lib/storage';
 import { Survey } from '@/types/survey';
 import { toast } from 'sonner';
 import {
@@ -36,6 +36,7 @@ export default function SurveyList() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deletePinInput, setDeletePinInput] = useState('');
 
   useEffect(() => {
     loadSurveys();
@@ -47,9 +48,18 @@ export default function SurveyList() {
   };
 
   const handleDelete = (id: string) => {
+    const surveyToDelete = surveys.find(s => s.id === id);
+    if (surveyToDelete?.resultsPin) {
+      if (!verifyPin(deletePinInput, surveyToDelete.resultsPin, surveyToDelete.pinSalt)) {
+        toast.error('Code PIN incorrect');
+        return;
+      }
+    }
+
     deleteSurvey(id);
     loadSurveys();
     setDeleteId(null);
+    setDeletePinInput('');
     toast.success('Questionnaire supprimé');
   };
 
@@ -245,10 +255,31 @@ export default function SurveyList() {
             <AlertDialogDescription className="text-gray-400">
               Cette action supprimera définitivement le questionnaire et toutes ses réponses.
               Cette action est irréversible.
+
+              {surveys.find(s => s.id === deleteId)?.resultsPin && (
+                <div className="mt-4 space-y-2">
+                  <label className="text-sm font-medium text-gray-300">
+                    Saisissez le code PIN pour confirmer :
+                  </label>
+                  <Input
+                    type="password"
+                    maxLength={4}
+                    value={deletePinInput}
+                    onChange={(e) => setDeletePinInput(e.target.value.replace(/\D/g, ''))}
+                    placeholder="PIN"
+                    className="bg-slate-700/50 border-white/10 text-gray-100 text-center text-xl tracking-widest"
+                  />
+                </div>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-white/10 text-gray-300 hover:bg-white/10">Annuler</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => setDeletePinInput('')}
+              className="border-white/10 text-gray-300 hover:bg-white/10"
+            >
+              Annuler
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteId && handleDelete(deleteId)}
               className="bg-red-600 hover:bg-red-700"

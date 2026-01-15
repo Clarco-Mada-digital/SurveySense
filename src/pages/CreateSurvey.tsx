@@ -5,9 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Plus, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Save, Lock, Settings } from 'lucide-react';
 import { Survey, Question } from '@/types/survey';
-import { saveSurvey, getSurveyById, generateId, hashPin } from '@/lib/storage';
+import { saveSurvey, getSurveyById, generateId, hashPin, verifyPin, isSurveyUnlocked, unlockSurveySession } from '@/lib/storage';
 import QuestionEditor from '@/components/QuestionEditor';
 import { toast } from 'sonner';
 
@@ -25,17 +25,38 @@ export default function CreateSurvey() {
     questions: []
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!isEditing);
+  const [pinInput, setPinInput] = useState<string>('');
+
   useEffect(() => {
     if (isEditing && id) {
       const existingSurvey = getSurveyById(id);
       if (existingSurvey) {
         setSurvey(existingSurvey);
+        // If there's no PIN or already unlocked in session, it's automatically authenticated
+        if (!existingSurvey.resultsPin || isSurveyUnlocked(id)) {
+          setIsAuthenticated(true);
+        }
       } else {
         toast.error('Questionnaire introuvable');
         navigate('/surveys');
       }
     }
   }, [id, isEditing, navigate]);
+
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (survey && survey.resultsPin) {
+      if (verifyPin(pinInput, survey.resultsPin, survey.pinSalt)) {
+        setIsAuthenticated(true);
+        unlockSurveySession(survey.id);
+        toast.success('Accès autorisé à l\'édition');
+      } else {
+        toast.error('Code PIN incorrect');
+        setPinInput('');
+      }
+    }
+  };
 
   const addQuestion = () => {
     const newQuestion: Question = {
@@ -113,9 +134,59 @@ export default function CreateSurvey() {
     };
 
     saveSurvey(surveyToSave);
+    unlockSurveySession(surveyToSave.id); // Automatically unlock the session for the newly saved survey
     toast.success(isEditing ? 'Questionnaire mis à jour' : 'Questionnaire créé avec succès');
     navigate('/surveys');
   };
+
+  if (!isAuthenticated && isEditing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <Card className="p-8 w-full max-w-md bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-2xl relative z-10">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Settings className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-100 mb-2">Édition protégée</h2>
+            <p className="text-gray-400">Veuillez saisir le code PIN pour modifier ce questionnaire.</p>
+          </div>
+
+          <form onSubmit={handlePinSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="password"
+                maxLength={4}
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value.replace(/\D/g, ''))}
+                placeholder="Code PIN"
+                className="text-center text-2xl tracking-[1em] h-14 bg-slate-700/50 border-white/10 text-gray-100 placeholder:text-gray-600 focus:border-blue-500/30 font-mono"
+                autoFocus
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg"
+            >
+              Déverrouiller l'éditeur
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => navigate('/surveys')}
+              className="w-full text-gray-400 hover:text-white hover:bg-white/5"
+            >
+              Retour
+            </Button>
+          </form>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">

@@ -25,7 +25,12 @@ Pour prévenir tout accès non autorisé via le stockage physique du navigateur,
 ### 3. Protection des Résultats par PIN Haché
 Vous pouvez protéger l'accès aux statistiques d'un questionnaire par un code PIN à 4 chiffres.
 - **Hachage SHA-256** : Le code PIN n'est jamais stocké en clair. Seule son empreinte numérique est conservée.
-- **Salage (Salt)** : Un sel unique est généré pour chaque questionnaire, rendant le décryptage par force brute par un attaquant pratiquement impossible, même si celui-ci possède le fichier d'export.
+- **Salage (Salt)** : Un sel unique est généré pour chaque questionnaire, rendant le décryptage par force brute pratiquement impossible.
+
+### 4. Verrouillage de l'Éditeur & Suppression
+La sécurité s'étend désormais à la gestion du questionnaire :
+- **Modification protégée** : L'accès à l'interface de modification d'un questionnaire existant nécessite la validation du code PIN.
+- **Suppression sécurisée** : Un code PIN valide est requis pour supprimer définitivement un questionnaire protégé, évitant les pertes de données accidentelles ou malveillantes.
 
 ## 🛠️ Stack Technique
 

@@ -13,7 +13,9 @@ import {
   exportResponsesWithDateFilter,
   exportResponsesAsCSVWithDateFilter,
   getResponsesDateStats,
-  verifyPin
+  verifyPin,
+  isSurveyUnlocked,
+  unlockSurveySession
 } from '@/lib/storage';
 import { Survey, SurveyResponse } from '@/types/survey';
 import { toast } from 'sonner';
@@ -47,8 +49,8 @@ export default function SurveyResults() {
           setEndDate(dateStats.dateRange.end);
         }
 
-        // Check if authentication is needed
-        if (!foundSurvey.resultsPin) {
+        // Check if authentication is needed or already unlocked in session
+        if (!foundSurvey.resultsPin || isSurveyUnlocked(id)) {
           setIsAuthenticated(true);
         }
       } else {
@@ -98,6 +100,7 @@ export default function SurveyResults() {
     if (survey && survey.resultsPin) {
       if (verifyPin(pinInput, survey.resultsPin, survey.pinSalt)) {
         setIsAuthenticated(true);
+        unlockSurveySession(survey.id);
         toast.success('Accès autorisé');
       } else {
         toast.error('Code PIN incorrect');

@@ -35,6 +35,22 @@ export const verifyPin = (inputPin: string, storedHash: string, salt?: string): 
   return hashPin(inputPin, salt) === storedHash;
 };
 
+// Session unlock utilities (Tab-only persistence)
+const UNLOCKED_SURVEYS_SESSION_KEY = 'unlocked_surveys';
+
+export const isSurveyUnlocked = (id: string): boolean => {
+  const unlocked = JSON.parse(sessionStorage.getItem(UNLOCKED_SURVEYS_SESSION_KEY) || '[]');
+  return unlocked.includes(id);
+};
+
+export const unlockSurveySession = (id: string): void => {
+  const unlocked = JSON.parse(sessionStorage.getItem(UNLOCKED_SURVEYS_SESSION_KEY) || '[]');
+  if (!unlocked.includes(id)) {
+    unlocked.push(id);
+    sessionStorage.setItem(UNLOCKED_SURVEYS_SESSION_KEY, JSON.stringify(unlocked));
+  }
+};
+
 const SURVEYS_KEY = 'surveys';
 const RESPONSES_KEY = 'survey_responses';
 
