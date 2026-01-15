@@ -5,14 +5,15 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Download, BarChart3, FileText, List, Calendar, Filter } from 'lucide-react';
-import { 
-  getSurveyById, 
-  getResponsesBySurveyId, 
-  exportResponsesAsCSV, 
+import {
+  getSurveyById,
+  getResponsesBySurveyId,
+  exportResponsesAsCSV,
   exportFullSurveyData,
   exportResponsesWithDateFilter,
   exportResponsesAsCSVWithDateFilter,
-  getResponsesDateStats
+  getResponsesDateStats,
+  verifyPin
 } from '@/lib/storage';
 import { Survey, SurveyResponse } from '@/types/survey';
 import { toast } from 'sonner';
@@ -28,6 +29,8 @@ export default function SurveyResults() {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [showDateFilter, setShowDateFilter] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [pinInput, setPinInput] = useState<string>('');
 
   useEffect(() => {
     if (id) {
@@ -36,12 +39,17 @@ export default function SurveyResults() {
         setSurvey(foundSurvey);
         const surveyResponses = getResponsesBySurveyId(id);
         setResponses(surveyResponses);
-        
+
         // Initialize date range with actual response dates
         const dateStats = getResponsesDateStats(id);
         if (dateStats.dateRange) {
           setStartDate(dateStats.dateRange.start);
           setEndDate(dateStats.dateRange.end);
+        }
+
+        // Check if authentication is needed
+        if (!foundSurvey.resultsPin) {
+          setIsAuthenticated(true);
         }
       } else {
         toast.error('Questionnaire introuvable');
@@ -85,13 +93,26 @@ export default function SurveyResults() {
     }
   };
 
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (survey && survey.resultsPin) {
+      if (verifyPin(pinInput, survey.resultsPin, survey.pinSalt)) {
+        setIsAuthenticated(true);
+        toast.success('Accès autorisé');
+      } else {
+        toast.error('Code PIN incorrect');
+        setPinInput('');
+      }
+    }
+  };
+
   const getQuestionStats = (questionId: string) => {
     const question = survey?.questions.find(q => q.id === questionId);
     if (!question) return null;
 
     // Get all answers for this question, ensuring we have valid values
     const rawAnswers = responses.map(r => r.answers.find(a => a.questionId === questionId)?.value);
-    const answers = rawAnswers.filter((answer): answer is string | number | string[] => 
+    const answers = rawAnswers.filter((answer): answer is string | number | string[] =>
       answer !== undefined && answer !== null && answer !== ''
     );
 
@@ -118,10 +139,10 @@ export default function SurveyResults() {
       const counts: Record<string, number> = {};
       answers.forEach(answer => {
         // Ensure answer is an array for checkbox questions
-        const arr = Array.isArray(answer) ? answer : 
+        const arr = Array.isArray(answer) ? answer :
           // If it's a string, split by '; ' to handle legacy format
           typeof answer === 'string' ? answer.split('; ').map(s => s.trim()).filter(Boolean) : [];
-        
+
         arr.forEach(optionId => {
           counts[optionId] = (counts[optionId] || 0) + 1;
         });
@@ -149,6 +170,55 @@ export default function SurveyResults() {
 
     return null;
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-600/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <Card className="p-8 w-full max-w-md bg-slate-800/60 backdrop-blur-sm border border-white/10 shadow-2xl relative z-10">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <BarChart3 className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-100 mb-2">Résultats protégés</h2>
+            <p className="text-gray-400">Ce questionnaire est protégé par un code PIN. Veuillez le saisir pour voir les résultats.</p>
+          </div>
+
+          <form onSubmit={handlePinSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="password"
+                maxLength={4}
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value.replace(/\D/g, ''))}
+                placeholder="Saisissez le code PIN"
+                className="text-center text-2xl tracking-[1em] h-14 bg-slate-700/50 border-white/10 text-gray-100 placeholder:text-gray-600 focus:border-blue-500/30 font-mono"
+                autoFocus
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0 shadow-lg"
+            >
+              Accéder aux résultats
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => navigate('/surveys')}
+              className="w-full text-gray-400 hover:text-white hover:bg-white/5"
+            >
+              Retour
+            </Button>
+          </form>
+        </Card>
+      </div>
+    );
+  }
 
   if (!survey) {
     return (
@@ -212,7 +282,7 @@ export default function SurveyResults() {
 
         {responses.length === 0 ? (
           <Card className="p-6 sm:p-8 text-center bg-slate-800/60 backdrop-blur-sm border border-white/10">
-            <img 
+            <img
               src="https://mgx-backend-cdn.metadl.com/generate/images/903894/2026-01-13/8a27dd6a-bd12-4fb0-b6fa-e919f906967d.png"
               alt="No responses"
               className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 opacity-50"
@@ -223,7 +293,7 @@ export default function SurveyResults() {
             <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               Partagez le lien du questionnaire pour commencer à recevoir des réponses
             </p>
-            <Button 
+            <Button
               onClick={() => {
                 const link = `${window.location.origin}/answer/${survey.id}`;
                 navigator.clipboard.writeText(link);
@@ -256,12 +326,12 @@ export default function SurveyResults() {
                 {survey.questions.slice(0, 6).map((question, index) => {
                   const stats = getQuestionStats(question.id);
                   const hasStats = stats && stats.length > 0;
-                  
+
                   // Get text answers for text/textarea questions
                   const textAnswers = question.type === 'text' || question.type === 'textarea'
                     ? responses.map(r => r.answers.find(a => a.questionId === question.id)?.value as string).filter(Boolean)
                     : [];
-                  
+
                   return (
                     <Card key={question.id} className="p-4 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 bg-slate-800/60 backdrop-blur-sm border border-white/10">
                       <h4 className="text-sm font-semibold text-gray-100 mb-2 line-clamp-2">
@@ -269,11 +339,11 @@ export default function SurveyResults() {
                       </h4>
                       <div className="text-xs text-gray-500 mb-3">
                         {question.type === 'text' || question.type === 'textarea' ? 'Texte' :
-                         question.type === 'radio' ? 'Choix unique' :
-                         question.type === 'checkbox' ? 'Choix multiples' :
-                         question.type === 'scale' ? 'Échelle' : 'Oui/Non'}
+                          question.type === 'radio' ? 'Choix unique' :
+                            question.type === 'checkbox' ? 'Choix multiples' :
+                              question.type === 'scale' ? 'Échelle' : 'Oui/Non'}
                       </div>
-                      
+
                       {/* Handle text/textarea questions */}
                       {question.type === 'text' || question.type === 'textarea' ? (
                         textAnswers.length > 0 ? (
@@ -325,8 +395,8 @@ export default function SurveyResults() {
               </div>
               {survey.questions.length > 6 && (
                 <div className="text-center">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => {
                       const questionsTab = document.querySelector('[value="questions"]') as HTMLElement;
                       questionsTab?.click();
@@ -378,7 +448,7 @@ export default function SurveyResults() {
                         <div className="space-y-2 sm:space-y-3">
                           {stats.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-slate-700/30 rounded-lg">
-                              <div 
+                              <div
                                 className="w-3 h-3 sm:w-4 sm:h-4 rounded"
                                 style={{ backgroundColor: COLORS[idx % COLORS.length] }}
                               />
@@ -484,8 +554,8 @@ export default function SurveyResults() {
               <Card className="p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10">
                 <h3 className="text-lg font-semibold text-gray-100 mb-4">Exporter les données</h3>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Button 
-                    onClick={handleExportCSV} 
+                  <Button
+                    onClick={handleExportCSV}
                     className="w-full h-auto p-4 flex flex-col items-center gap-2 border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                     variant="outline"
                   >
@@ -497,8 +567,8 @@ export default function SurveyResults() {
                       </div>
                     </div>
                   </Button>
-                  <Button 
-                    onClick={handleExportJSON} 
+                  <Button
+                    onClick={handleExportJSON}
                     className="w-full h-auto p-4 flex flex-col items-center gap-2 border-blue-500/30 text-blue-300 hover:bg-blue-500/10"
                     variant="outline"
                   >

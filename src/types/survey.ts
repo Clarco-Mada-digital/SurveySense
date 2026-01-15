@@ -23,6 +23,8 @@ export interface Survey {
   creatorEmail: string;
   creatorOrganization?: string;
   questions: Question[];
+  resultsPin?: string; // Hashed PIN to protect results
+  pinSalt?: string; // Salt for PIN hashing
   createdAt: string;
   updatedAt: string;
 }

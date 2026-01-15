@@ -139,7 +139,12 @@
 - Optimiser les performances
 - Vérifier le responsive sur différentes tailles d'écran
 
-### 14. Lint & Build
+### 14. Sécurité & Protection (Terminé ✅)
+- Implémentation du chiffrement AES pour toutes les données dans localStorage
+- Système de protection des résultats par code PIN (4 chiffres)
+- Indicateurs visuels pour les questionnaires protégés dans la liste
+
+### 15. Lint & Build
 - Exécuter pnpm run lint
 - Corriger les erreurs
 - Exécuter pnpm run build

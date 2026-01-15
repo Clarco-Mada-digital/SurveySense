@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { Survey, Question } from '@/types/survey';
-import { saveSurvey, getSurveyById, generateId } from '@/lib/storage';
+import { saveSurvey, getSurveyById, generateId, hashPin } from '@/lib/storage';
 import QuestionEditor from '@/components/QuestionEditor';
 import { toast } from 'sonner';
 
@@ -88,6 +88,16 @@ export default function CreateSurvey() {
     }
 
     const now = new Date().toISOString();
+
+    // Hash PIN if it's a new 4-digit PIN
+    let finalPin = survey.resultsPin;
+    let finalSalt = survey.pinSalt;
+
+    if (finalPin && finalPin.length === 4) {
+      finalSalt = generateId();
+      finalPin = hashPin(finalPin, finalSalt);
+    }
+
     const surveyToSave: Survey = {
       id: survey.id || generateId(),
       title: survey.title,
@@ -96,6 +106,8 @@ export default function CreateSurvey() {
       creatorEmail: survey.creatorEmail,
       creatorOrganization: survey.creatorOrganization,
       questions: survey.questions,
+      resultsPin: finalPin,
+      pinSalt: finalSalt,
       createdAt: survey.createdAt || now,
       updatedAt: now
     };
@@ -201,8 +213,21 @@ export default function CreateSurvey() {
                   onChange={(e) => setSurvey({ ...survey, description: e.target.value })}
                   placeholder="Décrivez l'objectif de votre questionnaire..."
                   className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
-                  rows={3}
+                  rows={2}
                 />
+              </div>
+              <div>
+                <Label htmlFor="resultsPin" className="text-xs sm:text-sm font-medium text-gray-300">Code PIN des résultats (optionnel)</Label>
+                <Input
+                  id="resultsPin"
+                  type="password"
+                  maxLength={4}
+                  value={survey.resultsPin || ''}
+                  onChange={(e) => setSurvey({ ...survey, resultsPin: e.target.value.replace(/\D/g, '') })}
+                  placeholder="Ex: 1234"
+                  className="mt-1 bg-slate-700/50 border-white/10 text-gray-100 placeholder-gray-400 focus:border-blue-500/30"
+                />
+                <p className="text-[10px] text-gray-400 mt-1 italic">Pour sécuriser l'accès aux graphiques et résultats.</p>
               </div>
             </div>
           </Card>
@@ -258,9 +283,9 @@ export default function CreateSurvey() {
               {/* Add question button at the bottom */}
               {survey.questions && survey.questions.length > 0 && (
                 <div className="pt-4 border-t border-white/10">
-                  <Button 
-                    onClick={addQuestion} 
-                    variant="outline" 
+                  <Button
+                    onClick={addQuestion}
+                    variant="outline"
                     className="w-full border-dashed border-blue-500/30 text-blue-300 hover:bg-blue-500/10 hover:border-blue-400/50"
                   >
                     <Plus className="h-4 w-4 mr-2" />

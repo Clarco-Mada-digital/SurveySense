@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  BarChart3, 
+import {
+  ArrowLeft,
+  Plus,
+  Pencil,
+  Trash2,
+  BarChart3,
   Link as LinkIcon,
   Search,
   ExternalLink,
   Database,
-  FileQuestion
+  FileQuestion,
+  Lock,
+  Shield
 } from 'lucide-react';
 import { getSurveys, deleteSurvey, getResponsesBySurveyId } from '@/lib/storage';
 import { Survey } from '@/types/survey';
@@ -130,9 +132,17 @@ export default function SurveyList() {
                 <Card key={survey.id} className="p-4 sm:p-6 bg-slate-800/60 backdrop-blur-sm border border-white/10 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group cursor-pointer">
                   <div className="space-y-3 sm:space-y-4">
                     <div onClick={() => navigate(`/answer/${survey.id}`)}>
-                      <h3 className="text-base sm:text-xl font-semibold text-gray-100 mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
-                        {survey.title}
-                      </h3>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <h3 className="text-base sm:text-xl font-semibold text-gray-100 line-clamp-2 group-hover:text-blue-400 transition-colors">
+                          {survey.title}
+                        </h3>
+                        {survey.resultsPin && (
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-indigo-500/20 border border-indigo-500/30 rounded text-[10px] text-indigo-300 font-medium whitespace-nowrap">
+                            <Lock className="h-3 w-3" />
+                            PIN
+                          </div>
+                        )}
+                      </div>
                       {survey.description && (
                         <p className="text-xs sm:text-sm text-gray-400 line-clamp-2">
                           {survey.description}
@@ -212,7 +222,7 @@ export default function SurveyList() {
               {searchTerm ? 'Aucun questionnaire trouvé' : 'Aucun questionnaire'}
             </h3>
             <p className="text-sm sm:text-base text-gray-400 mb-6">
-              {searchTerm 
+              {searchTerm
                 ? 'Essayez avec d\'autres mots-clés'
                 : 'Commencez par créer votre premier questionnaire'
               }
